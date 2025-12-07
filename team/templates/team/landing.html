@@ -1,0 +1,442 @@
+{% extends 'team/base.html' %}
+
+{% block title %}ManagerZone - Quản Lý Đội Bóng Chuyên Nghiệp{% endblock %}
+
+{% block content %}
+<style>
+    /* Hero Section */
+    .hero {
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        padding: 4rem 2rem;
+    }
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+            radial-gradient(circle at 30% 20%, rgba(0, 217, 255, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 70% 60%, rgba(255, 107, 107, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 50% 80%, rgba(255, 217, 61, 0.1) 0%, transparent 50%);
+        animation: gradientShift 10s ease infinite;
+        z-index: 0;
+    }
+
+    @keyframes gradientShift {
+
+        0%,
+        100% {
+            transform: scale(1) rotate(0deg);
+        }
+
+        50% {
+            transform: scale(1.1) rotate(5deg);
+        }
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
+        max-width: 900px;
+    }
+
+    .hero h1 {
+        font-size: 4rem;
+        font-weight: 900;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, #00d9ff 0%, #ff6b6b 50%, #ffd93d 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: titleFloat 3s ease-in-out infinite;
+        letter-spacing: -2px;
+    }
+
+    @keyframes titleFloat {
+
+        0%,
+        100% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .hero .subtitle {
+        font-size: 1.5rem;
+        color: var(--text-secondary);
+        margin-bottom: 3rem;
+        animation: fadeInUp 1s ease-out 0.3s both;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        animation: fadeInUp 1s ease-out 0.6s both;
+    }
+
+    .hero-btn {
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        border-radius: 50px;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-btn::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .hero-btn:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .btn-primary-hero {
+        background: linear-gradient(135deg, #00d9ff, #00a8cc);
+        color: var(--bg-dark);
+        box-shadow: 0 10px 30px rgba(0, 217, 255, 0.3);
+    }
+
+    .btn-primary-hero:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 15px 40px rgba(0, 217, 255, 0.5);
+    }
+
+    .btn-secondary-hero {
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: var(--text-primary);
+        backdrop-filter: blur(10px);
+    }
+
+    .btn-secondary-hero:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-5px);
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Features Section */
+    .features {
+        padding: 6rem 2rem;
+        position: relative;
+    }
+
+    .section-title {
+        text-align: center;
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .section-subtitle {
+        text-align: center;
+        color: var(--text-secondary);
+        font-size: 1.2rem;
+        margin-bottom: 4rem;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .feature-card {
+        background: linear-gradient(135deg, rgba(21, 26, 53, 0.9), rgba(30, 37, 71, 0.7));
+        padding: 2.5rem;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+    }
+
+    .feature-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 50px rgba(0, 217, 255, 0.2);
+        border-color: rgba(0, 217, 255, 0.3);
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        display: inline-block;
+        animation: iconFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes iconFloat {
+
+        0%,
+        100% {
+            transform: translateY(0px) rotate(0deg);
+        }
+
+        50% {
+            transform: translateY(-10px) rotate(5deg);
+        }
+    }
+
+    .feature-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+    }
+
+    .feature-card p {
+        color: var(--text-secondary);
+        line-height: 1.8;
+    }
+
+    /* Stats Section */
+    .stats {
+        padding: 6rem 2rem;
+        background: linear-gradient(135deg, rgba(0, 217, 255, 0.05), rgba(255, 107, 107, 0.05));
+        position: relative;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .stat-card {
+        text-align: center;
+        padding: 2rem;
+        background: rgba(21, 26, 53, 0.8);
+        border-radius: 16px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(0, 217, 255, 0.3);
+    }
+
+    .stat-number {
+        font-size: 3.5rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: var(--text-secondary);
+        font-size: 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* CTA Section */
+    .cta {
+        padding: 6rem 2rem;
+        text-align: center;
+    }
+
+    .cta-box {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 4rem 3rem;
+        background: linear-gradient(135deg, rgba(0, 217, 255, 0.1), rgba(255, 107, 107, 0.1));
+        border-radius: 24px;
+        border: 2px solid rgba(0, 217, 255, 0.2);
+        backdrop-filter: blur(20px);
+    }
+
+    .cta h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .cta p {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero h1 {
+            font-size: 2.5rem;
+        }
+
+        .hero .subtitle {
+            font-size: 1.2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .hero-buttons {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<!-- Hero Section -->
+<div class="hero">
+    <div class="hero-content">
+        <h1>⚽ ManagerZone</h1>
+        <p class="subtitle">Quản lý đội bóng chuyên nghiệp - Thống kê tự động - Phân tích chuyên sâu</p>
+        <div class="hero-buttons">
+            <a href="{% url 'team:signup' %}" class="hero-btn btn-primary-hero">
+                🚀 Bắt Đầu Ngay
+            </a>
+            <a href="{% url 'login' %}" class="hero-btn btn-secondary-hero">
+                🔐 Đăng Nhập
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<section class="features">
+    <h2 class="section-title">Tính Năng Nổi Bật</h2>
+    <p class="section-subtitle">Mọi thứ bạn cần để quản lý đội bóng hiệu quả</p>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">👤</div>
+            <h3>Quản Lý Cầu Thủ</h3>
+            <p>Lưu trữ thông tin chi tiết: vị trí, số áo, phong cách chơi. Upload avatar và cập nhật profile dễ dàng.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">📅</div>
+            <h3>Lịch Thi Đấu</h3>
+            <p>Xem trận đấu sắp tới, đăng ký tham gia nhanh chóng. Nhận thông báo và quản lý attendance hiệu quả.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>Thống Kê Tự Động</h3>
+            <p>Goals, assists, rating được tính tự động. Xem tỷ lệ thắng, phong độ và so sánh với đồng đội.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">⚽</div>
+            <h3>Quản Lý Trận Đấu</h3>
+            <p>Admin nhập tỷ số, chấm điểm cầu thủ, ghi nhận goals/assists. Mọi thứ được cập nhật real-time.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">🏆</div>
+            <h3>Bảng Xếp Hạng</h3>
+            <p>Xem top scorer, best assists, MVP. Theo dõi phong độ cá nhân và thi đấu với đồng đội.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">📱</div>
+            <h3>Responsive Design</h3>
+            <p>Giao diện đẹp trên mọi thiết bị. Dark theme hiện đại, dễ nhìn và chuyên nghiệp.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats">
+    <h2 class="section-title">Con Số Ấn Tượng</h2>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">100+</div>
+            <div class="stat-label">Đội Bóng</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">1000+</div>
+            <div class="stat-label">Cầu Thủ</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">5000+</div>
+            <div class="stat-label">Trận Đấu</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">99%</div>
+            <div class="stat-label">Hài Lòng</div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta">
+    <div class="cta-box">
+        <h2>🚀 Sẵn Sàng Nâng Tầm Đội Bóng?</h2>
+        <p>Tham gia ManagerZone ngay hôm nay và trải nghiệm quản lý đội bóng chuyên nghiệp nhất!</p>
+        <a href="{% url 'team:signup' %}" class="hero-btn btn-primary-hero">
+            Đăng Ký Miễn Phí
+        </a>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,347 @@
+{% extends 'team/base.html' %}
+
+{% block title %}Schedule - ManagerZone{% endblock %}
+
+{% block content %}
+<style>
+    .schedule-page {
+        padding: 2rem 0;
+    }
+
+    .schedule-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .schedule-header h1 {
+        font-size: 3rem;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+
+    .schedule-header p {
+        color: var(--text-secondary);
+        font-size: 1.2rem;
+    }
+
+    .matches-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+    }
+
+    .match-card {
+        background: linear-gradient(135deg, rgba(21, 26, 53, 0.9), rgba(30, 37, 71, 0.7));
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+    }
+
+    .match-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .match-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(0, 217, 255, 0.2);
+        border-color: rgba(0, 217, 255, 0.3);
+    }
+
+    .match-header {
+        padding: 1.5rem;
+        background: rgba(0, 217, 255, 0.05);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .match-date {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: var(--primary-color);
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .match-date i {
+        font-size: 1.1rem;
+    }
+
+    .match-time {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    .match-time i {
+        color: var(--accent-color);
+    }
+
+    .match-body {
+        padding: 2rem 1.5rem;
+    }
+
+    .match-vs {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .team {
+        text-align: center;
+        flex: 1;
+    }
+
+    .team-name {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .team-icon {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+        display: block;
+        animation: teamPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes teamPulse {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+    }
+
+    .vs-text {
+        font-size: 1.5rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .match-info {
+        display: grid;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+    }
+
+    .info-row i {
+        color: var(--primary-color);
+        font-size: 1.1rem;
+        width: 20px;
+        text-align: center;
+    }
+
+    .info-row span {
+        color: var(--text-secondary);
+        flex: 1;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.25rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-top: 1rem;
+    }
+
+    .status-going {
+        background: rgba(107, 207, 127, 0.15);
+        color: var(--success-color);
+        border: 1px solid rgba(107, 207, 127, 0.3);
+    }
+
+    .status-not-going {
+        background: rgba(255, 87, 87, 0.15);
+        color: var(--danger-color);
+        border: 1px solid rgba(255, 87, 87, 0.3);
+    }
+
+    .status-maybe {
+        background: rgba(255, 217, 61, 0.15);
+        color: var(--accent-color);
+        border: 1px solid rgba(255, 217, 61, 0.3);
+    }
+
+    .status-not-registered {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-muted);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .register-btn {
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin-top: 1rem;
+        text-decoration: none;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: linear-gradient(135deg, rgba(21, 26, 53, 0.9), rgba(30, 37, 71, 0.7));
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .empty-state i {
+        font-size: 5rem;
+        color: var(--text-muted);
+        margin-bottom: 1.5rem;
+        display: block;
+        opacity: 0.5;
+    }
+
+    .empty-state h3 {
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        color: var(--text-muted);
+    }
+
+    @media (max-width: 768px) {
+        .matches-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .schedule-header h1 {
+            font-size: 2rem;
+        }
+
+        .match-vs {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .vs-text {
+            transform: rotate(90deg);
+        }
+    }
+</style>
+
+<div class="schedule-page container">
+    <div class="schedule-header">
+        <h1><i class="fas fa-calendar-alt"></i> Lịch Thi Đấu</h1>
+        <p>Danh sách các trận đấu sắp tới</p>
+    </div>
+
+    {% if matches %}
+    <div class="matches-grid">
+        {% for match in matches %}
+        <div class="match-card">
+            <div class="match-header">
+                <div class="match-date">
+                    <i class="fas fa-calendar"></i>
+                    <span>{{ match.datetime|date:"l, d/m/Y" }}</span>
+                </div>
+                <div class="match-time">
+                    <i class="fas fa-clock"></i>
+                    <span>{{ match.datetime|date:"H:i" }}</span>
+                </div>
+            </div>
+
+            <div class="match-body">
+                <div class="match-vs">
+                    <div class="team">
+                        <span class="team-icon">⚽</span>
+                        <div class="team-name">Đội Nhà</div>
+                    </div>
+                    <div class="vs-text">VS</div>
+                    <div class="team">
+                        <span class="team-icon">🎯</span>
+                        <div class="team-name">{{ match.opponent }}</div>
+                    </div>
+                </div>
+
+                <div class="match-info">
+                    <div class="info-row">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>{{ match.location|default:"Chưa xác định" }}</span>
+                    </div>
+
+                    {% if match.tactical_notes %}
+                    <div class="info-row">
+                        <i class="fas fa-clipboard"></i>
+                        <span>{{ match.tactical_notes|truncatewords:15 }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div style="text-align: center;">
+                    {% if match.user_status == 'going' %}
+                    <div class="status-badge status-going">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Bạn sẽ tham gia</span>
+                    </div>
+                    {% elif match.user_status == 'not going' %}
+                    <div class="status-badge status-not-going">
+                        <i class="fas fa-times-circle"></i>
+                        <span>Bạn không tham gia</span>
+                    </div>
+                    {% elif match.user_status == 'maybe' %}
+                    <div class="status-badge status-maybe">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Chưa chắc chắn</span>
+                    </div>
+                    {% else %}
+                    <div class="status-badge status-not-registered">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span>Chưa đăng ký</span>
+                    </div>
+                    {% endif %}
+
+                    <a href="{% url 'team:register_attendance' %}" class="btn btn-primary register-btn">
+                        <i class="fas fa-edit"></i> Đăng Ký Tham Gia
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-calendar-times"></i>
+        <h3>Chưa có trận đấu nào sắp tới</h3>
+        <p>Các trận đấu mới sẽ được cập nhật ở đây</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

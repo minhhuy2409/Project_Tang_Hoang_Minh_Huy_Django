@@ -1,0 +1,157 @@
+{% extends 'team/base.html' %}
+
+{% block title %}Manage Match - ManagerZone{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h2>Manage Match: VS {{ match.opponent }}</h2>
+        <a href="{% url 'team:dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+
+    <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 2rem; align-items: start;">
+
+        <!-- Left Column: Match Info & Attendance -->
+        <div>
+            <!-- Match Info Form -->
+            <div class="card">
+                <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Match Details</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="update_score" value="1">
+
+                    <div class="form-group">
+                        <label>Score (Us - Them)</label>
+                        <input type="text" name="score" value="{{ match.score }}" placeholder="e.g. 3-1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tactical Notes</label>
+                        <textarea name="tactical_notes" rows="3">{{ match.tactical_notes }}</textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Update Details</button>
+                </form>
+            </div>
+
+            <!-- Player Ratings -->
+            <div class="card">
+                <h3 style="color: var(--secondary-color); margin-bottom: 1rem;">Player Ratings</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="update_ratings" value="1">
+
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                <th style="padding: 0.5rem; text-align: left;">Player</th>
+                                <th style="padding: 0.5rem; text-align: left;">Status</th>
+                                <th style="padding: 0.5rem; text-align: left;">Rating (0-10)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for att in attendances %}
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <td style="padding: 0.5rem;">{{ att.player.name }}</td>
+                                <td style="padding: 0.5rem;">
+                                    {% if att.status == 'going' %}
+                                    <span style="color: var(--success-color);">Going</span>
+                                    {% elif att.status == 'not going' %}
+                                    <span style="color: var(--danger-color);">Not Going</span>
+                                    {% else %}
+                                    <span style="color: var(--accent-color);">Maybe</span>
+                                    {% endif %}
+                                </td>
+                                <td style="padding: 0.5rem;">
+                                    {% if att.status == 'going' %}
+                                    <input type="number" step="0.1" min="0" max="10" name="rating_{{ att.id }}"
+                                        value="{{ att.rating|default:'' }}" style="width: 80px; padding: 0.25rem;">
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <div class="mt-4 text-center">
+                        <button type="submit" class="btn btn-primary">Save Ratings</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Column: Events -->
+        <div>
+            <!-- Goals -->
+            <div class="card">
+                <h3 style="color: var(--accent-color); margin-bottom: 1rem;">Goals ⚽</h3>
+                <ul style="list-style: none; padding: 0; margin-bottom: 1rem;">
+                    {% for goal in goals %}
+                    <li
+                        style="margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <strong>{{ goal.player.name }}</strong> ({{ goal.minute }}')
+                    </li>
+                    {% empty %}
+                    <li style="color: var(--text-muted);">No goals recorded.</li>
+                    {% endfor %}
+                </ul>
+
+                <form method="post" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                    {% csrf_token %}
+                    <input type="hidden" name="add_goal" value="1">
+                    <div class="form-group">
+                        <label>Player</label>
+                        <select name="player">
+                            <option value="">Select Player</option>
+                            {% for p in eligible_players %}
+                            <option value="{{ p.id }}">{{ p.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Minute</label>
+                        <input type="number" name="minute" min="1" max="120">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Add Goal</button>
+                </form>
+            </div>
+
+            <!-- Assists -->
+            <div class="card">
+                <h3 style="color: var(--secondary-color); margin-bottom: 1rem;">Assists 👟</h3>
+                <ul style="list-style: none; padding: 0; margin-bottom: 1rem;">
+                    {% for assist in assists %}
+                    <li
+                        style="margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <strong>{{ assist.player.name }}</strong> ({{ assist.minute }}')
+                    </li>
+                    {% empty %}
+                    <li style="color: var(--text-muted);">No assists recorded.</li>
+                    {% endfor %}
+                </ul>
+
+                <form method="post" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                    {% csrf_token %}
+                    <input type="hidden" name="add_assist" value="1">
+                    <div class="form-group">
+                        <label>Player</label>
+                        <select name="player">
+                            <option value="">Select Player</option>
+                            {% for p in eligible_players %}
+                            <option value="{{ p.id }}">{{ p.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Minute</label>
+                        <input type="number" name="minute" min="1" max="120">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Add Assist</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

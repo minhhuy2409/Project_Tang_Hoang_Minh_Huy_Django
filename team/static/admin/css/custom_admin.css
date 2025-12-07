@@ -1,0 +1,392 @@
+/* ManagerZone Admin Custom Styles */
+
+:root {
+    --primary-color: #00d9ff;
+    --primary-dark: #00a8cc;
+    --secondary-color: #ff6b6b;
+    --accent-color: #ffd93d;
+    --success-color: #6bcf7f;
+    --danger-color: #ff5757;
+
+    --bg-dark: #0a0e27;
+    --bg-darker: #050816;
+    --bg-card: #151a35;
+    --bg-hover: #1e2547;
+
+    --text-primary: #ffffff;
+    --text-secondary: #a8b2d1;
+    --text-muted: #64748b;
+}
+
+/* Global Styles */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Header */
+#header {
+    background: linear-gradient(135deg, rgba(21, 26, 53, 0.95), rgba(30, 37, 71, 0.9)) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 217, 255, 0.2) !important;
+    box-shadow: 0 4px 16px rgba(0, 217, 255, 0.15);
+}
+
+#site-name {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+#site-name a {
+    color: transparent !important;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800 !important;
+    font-size: 1.5rem !important;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#site-name a i {
+    -webkit-text-fill-color: var(--primary-color);
+    background: none;
+}
+
+#user-tools {
+    background: rgba(255, 255, 255, 0.05) !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 8px;
+}
+
+#user-tools a {
+    color: var(--text-secondary) !important;
+    transition: all 0.3s ease;
+}
+
+#user-tools a:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Breadcrumbs */
+.breadcrumbs {
+    background: rgba(0, 217, 255, 0.05) !important;
+    border: 1px solid rgba(0, 217, 255, 0.1) !important;
+    border-radius: 8px;
+    padding: 10px 15px !important;
+}
+
+.breadcrumbs a {
+    color: var(--primary-color) !important;
+}
+
+/* Content */
+#content {
+    background: transparent !important;
+}
+
+.module {
+    background: linear-gradient(135deg, rgba(21, 26, 53, 0.9), rgba(30, 37, 71, 0.7)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 16px rgba(0, 217, 255, 0.1);
+}
+
+.module h2,
+.module caption {
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)) !important;
+    color: var(--bg-dark) !important;
+    font-weight: 700 !important;
+    border-radius: 16px 16px 0 0 !important;
+    padding: 12px 15px !important;
+}
+
+/* Tables */
+table {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+}
+
+thead th {
+    background: rgba(0, 217, 255, 0.1) !important;
+    color: var(--primary-color) !important;
+    border-bottom: 2px solid rgba(0, 217, 255, 0.3) !important;
+    font-weight: 600 !important;
+}
+
+tbody tr {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    transition: all 0.3s ease;
+}
+
+tbody tr:hover {
+    background: rgba(0, 217, 255, 0.05) !important;
+}
+
+tbody th,
+tbody td {
+    color: var(--text-secondary) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+tbody td a {
+    color: var(--primary-color) !important;
+}
+
+tbody td a:hover {
+    color: var(--accent-color) !important;
+}
+
+/* Forms */
+.form-row {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 8px;
+    padding: 12px !important;
+    margin-bottom: 10px;
+}
+
+label {
+    color: var(--text-secondary) !important;
+    font-weight: 600 !important;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="url"],
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+select,
+textarea {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    color: var(--text-primary) !important;
+    padding: 8px 12px !important;
+    transition: all 0.3s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.1) !important;
+    outline: none !important;
+}
+
+/* Buttons */
+.button,
+input[type="submit"],
+input[type="button"],
+.submit-row input {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)) !important;
+    color: var(--bg-dark) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 10px 20px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 217, 255, 0.3) !important;
+}
+
+.button.default,
+input[type="submit"].default {
+    background: linear-gradient(135deg, var(--success-color), #4cd137) !important;
+}
+
+.deletelink,
+.deletelink-box a {
+    background: linear-gradient(135deg, var(--danger-color), #d63031) !important;
+    color: white !important;
+}
+
+/* Sidebar */
+#content-related {
+    background: linear-gradient(135deg, rgba(21, 26, 53, 0.9), rgba(30, 37, 71, 0.7)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 16px;
+}
+
+#content-related h2 {
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)) !important;
+    color: var(--bg-dark) !important;
+    border-radius: 16px 16px 0 0 !important;
+}
+
+#content-related ul {
+    background: transparent !important;
+}
+
+#content-related li {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+#content-related a {
+    color: var(--text-secondary) !important;
+    transition: all 0.3s ease;
+}
+
+#content-related a:hover {
+    color: var(--primary-color) !important;
+    padding-left: 10px;
+}
+
+/* Dashboard */
+#content-main .module {
+    margin-bottom: 20px;
+}
+
+.dashboard .module table th a {
+    color: var(--primary-color) !important;
+    font-weight: 600 !important;
+}
+
+/* Changelist */
+#changelist {
+    background: transparent !important;
+}
+
+#changelist-filter {
+    background: linear-gradient(135deg, rgba(21, 26, 53, 0.9), rgba(30, 37, 71, 0.7)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 16px;
+}
+
+#changelist-filter h2 {
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)) !important;
+    color: var(--bg-dark) !important;
+    border-radius: 16px 16px 0 0 !important;
+    padding: 12px 15px !important;
+}
+
+#changelist-filter h3 {
+    color: var(--text-secondary) !important;
+    font-weight: 600 !important;
+}
+
+#changelist-filter li {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+#changelist-filter a {
+    color: var(--text-secondary) !important;
+}
+
+#changelist-filter a:hover,
+#changelist-filter li.selected a {
+    color: var(--primary-color) !important;
+}
+
+/* Pagination */
+.paginator {
+    color: var(--text-secondary) !important;
+}
+
+.paginator a {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: var(--text-secondary) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.paginator a:hover {
+    background: rgba(0, 217, 255, 0.1) !important;
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+/* Messages */
+.messagelist {
+    margin: 0 0 20px !important;
+}
+
+.messagelist li {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-left: 4px solid var(--primary-color) !important;
+    color: var(--text-primary) !important;
+    border-radius: 8px;
+}
+
+.messagelist .success {
+    border-left-color: var(--success-color) !important;
+    background: rgba(107, 207, 127, 0.1) !important;
+}
+
+.messagelist .warning {
+    border-left-color: var(--accent-color) !important;
+    background: rgba(255, 217, 61, 0.1) !important;
+}
+
+.messagelist .error {
+    border-left-color: var(--danger-color) !important;
+    background: rgba(255, 87, 87, 0.1) !important;
+}
+
+/* Login Page */
+.login {
+    background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%) !important;
+}
+
+.login #header {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.login #content {
+    padding: 50px 0 !important;
+}
+
+.login .module {
+    border: 1px solid rgba(0, 217, 255, 0.2) !important;
+    box-shadow: 0 10px 40px rgba(0, 217, 255, 0.2) !important;
+}
+
+.login .submit-row {
+    background: transparent !important;
+    border: none !important;
+    padding: 15px !important;
+}
+
+/* Footer */
+#footer {
+    background: rgba(21, 26, 53, 0.8) !important;
+    color: var(--text-muted) !important;
+    border-top: 1px solid rgba(0, 217, 255, 0.1) !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 217, 255, 0.3);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 217, 255, 0.5);
+}

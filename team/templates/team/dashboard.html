@@ -1,0 +1,396 @@
+{% extends 'team/base.html' %}
+
+{% block title %}Dashboard - ManagerZone{% endblock %}
+
+{% block content %}
+<style>
+    .dashboard {
+        padding: 2rem 0;
+    }
+
+    .dashboard-header {
+        margin-bottom: 3rem;
+    }
+
+    .dashboard-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .dashboard-header p {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, rgba(21, 26, 53, 0.9), rgba(30, 37, 71, 0.7));
+        padding: 1.5rem;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--gradient-color, linear-gradient(90deg, var(--primary-color), var(--secondary-color)));
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(0, 217, 255, 0.2);
+        box-shadow: 0 10px 30px rgba(0, 217, 255, 0.15);
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Charts Section */
+    .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .chart-card {
+        background: linear-gradient(135deg, rgba(21, 26, 53, 0.9), rgba(30, 37, 71, 0.7));
+        padding: 2rem;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .chart-card h3 {
+        margin-bottom: 1.5rem;
+        color: var(--primary-color);
+        font-size: 1.3rem;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 300px;
+    }
+
+    /* Tables */
+    .tables-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 2rem;
+    }
+
+    .table-card {
+        background: linear-gradient(135deg, rgba(21, 26, 53, 0.9), rgba(30, 37, 71, 0.7));
+        padding: 2rem;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .table-card h3 {
+        margin-bottom: 1.5rem;
+        color: var(--primary-color);
+        font-size: 1.3rem;
+    }
+
+    .player-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .player-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        background: rgba(255, 255, 255, 0.03);
+        transition: all 0.3s ease;
+    }
+
+    .player-item:hover {
+        background: rgba(255, 255, 255, 0.06);
+        transform: translateX(5px);
+    }
+
+    .player-name {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .player-stat {
+        font-size: 1.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .match-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .match-opponent {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .match-score {
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+
+    .match-score.win {
+        color: var(--success-color);
+    }
+
+    .match-score.loss {
+        color: var(--danger-color);
+    }
+
+    .match-score.draw {
+        color: var(--accent-color);
+    }
+
+    @media (max-width: 768px) {
+
+        .charts-grid,
+        .tables-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="dashboard container">
+    <div class="dashboard-header">
+        <h1>⚽ Dashboard</h1>
+        <p>Tổng quan đội bóng và thống kê chi tiết</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <div class="stat-card" style="--gradient-color: linear-gradient(90deg, #00d9ff, #00a8cc);">
+            <span class="stat-icon">⚽</span>
+            <div class="stat-value">{{ total_matches }}</div>
+            <div class="stat-label">Trận Đấu</div>
+        </div>
+
+        <div class="stat-card" style="--gradient-color: linear-gradient(90deg, #ff6b6b, #ee5a6f);">
+            <span class="stat-icon">👥</span>
+            <div class="stat-value">{{ total_players }}</div>
+            <div class="stat-label">Cầu Thủ</div>
+        </div>
+
+        <div class="stat-card" style="--gradient-color: linear-gradient(90deg, #ffd93d, #f9ca24);">
+            <span class="stat-icon">🎯</span>
+            <div class="stat-value">{{ total_goals }}</div>
+            <div class="stat-label">Bàn Thắng</div>
+        </div>
+
+        <div class="stat-card" style="--gradient-color: linear-gradient(90deg, #6bcf7f, #4cd137);">
+            <span class="stat-icon">🏆</span>
+            <div class="stat-value">{{ win_rate }}%</div>
+            <div class="stat-label">Tỷ Lệ Thắng</div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+        <div class="chart-card">
+            <h3>📊 Thành Tích</h3>
+            <div class="chart-container">
+                <canvas id="winRateChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h3>⚽ Top Ghi Bàn</h3>
+            <div class="chart-container">
+                <canvas id="topScorersChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tables -->
+    <div class="tables-grid">
+        <div class="table-card">
+            <h3>🎯 Top Scorers</h3>
+            <ul class="player-list">
+                {% for player in top_scorers %}
+                <li class="player-item">
+                    <span class="player-name">{{ player.name }}</span>
+                    <span class="player-stat">{{ player.goals }}</span>
+                </li>
+                {% empty %}
+                <p style="color: var(--text-muted); text-align: center;">Chưa có dữ liệu</p>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="table-card">
+            <h3>👟 Top Assists</h3>
+            <ul class="player-list">
+                {% for player in top_assisters %}
+                <li class="player-item">
+                    <span class="player-name">{{ player.name }}</span>
+                    <span class="player-stat">{{ player.assists }}</span>
+                </li>
+                {% empty %}
+                <p style="color: var(--text-muted); text-align: center;">Chưa có dữ liệu</p>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Recent Matches -->
+    <div class="table-card">
+        <h3>🏟️ Trận Đấu Gần Đây</h3>
+        {% for item in recent_matches %}
+        <div class="match-item">
+            <div>
+                <div class="match-opponent">VS {{ item.match.opponent }}</div>
+                <small style="color: var(--text-muted);">{{ item.match.datetime|date:"d/m/Y H:i" }}</small>
+            </div>
+            {% if item.match.score %}
+            {% if item.result == 'win' %}
+            <span class="match-score win">{{ item.match.score }} ✅</span>
+            {% elif item.result == 'loss' %}
+            <span class="match-score loss">{{ item.match.score }} ❌</span>
+            {% elif item.result == 'draw' %}
+            <span class="match-score draw">{{ item.match.score }} ➖</span>
+            {% else %}
+            <span class="match-score">{{ item.match.score }}</span>
+            {% endif %}
+            {% else %}
+            <span style="color: var(--text-muted);">Chưa có kết quả</span>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p style="color: var(--text-muted); text-align: center;">Chưa có trận đấu nào</p>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Win Rate Pie Chart
+    const winRateCtx = document.getElementById('winRateChart').getContext('2d');
+    new Chart(winRateCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Thắng', 'Thua', 'Hòa'],
+            datasets: [{
+                data: [{{ chart_data.win_rate.wins }}, {{ chart_data.win_rate.losses }}, {{ chart_data.win_rate.draws }}],
+        backgroundColor: [
+        'rgba(107, 207, 127, 0.8)',
+        'rgba(255, 87, 87, 0.8)',
+        'rgba(255, 217, 61, 0.8)'
+    ],
+        borderColor: [
+        'rgba(107, 207, 127, 1)',
+        'rgba(255, 87, 87, 1)',
+        'rgba(255, 217, 61, 1)'
+    ],
+        borderWidth: 2
+        }]
+    },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    color: '#a8b2d1',
+                    font: { size: 12, family: 'Inter' }
+                }
+            }
+        }
+    }
+});
+
+    // Top Scorers Bar Chart
+    const topScorersCtx = document.getElementById('topScorersChart').getContext('2d');
+    new Chart(topScorersCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ chart_data.top_scorers.labels | safe }},
+        datasets: [{
+            label: 'Goals',
+            data: {{ chart_data.top_scorers.data | safe }},
+        backgroundColor: 'rgba(0, 217, 255, 0.6)',
+        borderColor: 'rgba(0, 217, 255, 1)',
+        borderWidth: 2,
+        borderRadius: 8
+        }]
+    },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    color: '#a8b2d1',
+                    font: { family: 'Inter' }
+                },
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.05)'
+                }
+            },
+            x: {
+                ticks: {
+                    color: '#a8b2d1',
+                    font: { family: 'Inter' }
+                },
+                grid: {
+                    display: false
+                }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}
